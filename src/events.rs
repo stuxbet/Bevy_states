@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 use bevy::input::keyboard::KeyCode;
 
+//FIXME:  this makes this system not fully indepenant from the states.rs so I think this should be looked at
 use crate::states::MachineState;
 
 // Define a simple event
@@ -13,8 +14,8 @@ struct SimpleEvent {
 enum EventTypes {
     ShitHitsTheFan,
     BigFire,
-    Explosion,
-    MiscComputerIssue
+    Emergency,
+    PauseButtonHit
 }
 
 //System to send SimpleEvent when a key is pressed
@@ -35,16 +36,16 @@ fn send_event_system(
             event_type: EventTypes::ShitHitsTheFan,
         });
     }
-    if keyboard_input.just_pressed(KeyCode::KeyD)  {
+    if keyboard_input.just_pressed(KeyCode::KeyE)  {
         event_writer.send(SimpleEvent {
-            message: "large vibration and temp detected event sent".to_string(),
-            event_type: EventTypes::Explosion,
+            message: "Emergency condition found sounding the alarm".to_string(),
+            event_type: EventTypes::Emergency,
         });
     }
-    if keyboard_input.just_pressed(KeyCode::KeyW)  {
+    if keyboard_input.just_pressed(KeyCode::KeyP)  {
         event_writer.send(SimpleEvent {
             message: "Irratic sensor data detected event sent".to_string(),
-            event_type: EventTypes::MiscComputerIssue,
+            event_type: EventTypes::PauseButtonHit,
         });
     }
 }
@@ -57,19 +58,28 @@ fn handle_event_system(
     mut state: Res<State<MachineState>>
 ) {
     for event in event_reader.read() {
+        /*
+        this match statement is where you would impement either single events triggering 
+        statechanges may be able to add in parameters that take sensor data to chack for emergency conditions
+        */
+
 
         match event.event_type  {
             EventTypes::BigFire => {
                 next_state.set(MachineState::Running);
             }
-            EventTypes::Explosion => {
-                next_state.set(MachineState::Idle);
+            EventTypes::Emergency => {            
+                next_state.set(MachineState::EmergencyShutdown);
             }
             EventTypes::ShitHitsTheFan => {
                 next_state.set(MachineState::Running);
             }
-            EventTypes::MiscComputerIssue => {
-                next_state.set(MachineState::Idle);
+            EventTypes::PauseButtonHit => {
+                match state.get() {
+                    MachineState::Paused => next_state.set(MachineState::Running),
+                    MachineState::Running => next_state.set(MachineState::Paused),
+                    _ => (),
+                }
             }
         }
 
