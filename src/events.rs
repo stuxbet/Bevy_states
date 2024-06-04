@@ -26,40 +26,42 @@ fn send_event_system(
     keyboard_input: Res<ButtonInput<KeyCode>>,
 
 ) {
-    if keyboard_input.just_pressed(KeyCode::KeyA)  {
-        event_writer.send(SimpleEvent {
+
+//TODO: in implementation these keyboard imputs will instead be if statements watching for stimuli either from websocket/webserver (startbutton etc) or sensor data (fire detected etc)
+
+for key_code in keyboard_input.get_just_pressed() {
+    let event = match key_code {
+        KeyCode::KeyA => Some(SimpleEvent {
             message: "Stop event sent".to_string(),
             event_type: EventTypes::Stop,
-        });
-    }
-    if keyboard_input.just_pressed(KeyCode::KeyS)  {
-        event_writer.send(SimpleEvent {
+        }),
+        KeyCode::KeyS => Some(SimpleEvent {
             message: "Startup detected".to_string(),
             event_type: EventTypes::Start,
-        });
-    }
-    if keyboard_input.just_pressed(KeyCode::KeyE)  {
-        event_writer.send(SimpleEvent {
+        }),
+        KeyCode::KeyE => Some(SimpleEvent {
             message: "Emergency condition found sounding the alarm".to_string(),
             event_type: EventTypes::Emergency,
-        });
-    }
-    if keyboard_input.just_pressed(KeyCode::KeyP)  {
-        event_writer.send(SimpleEvent {
+        }),
+        KeyCode::KeyP => Some(SimpleEvent {
             message: "Pause pressed".to_string(),
             event_type: EventTypes::PauseButtonHit,
-        });
-    }
-    if keyboard_input.just_pressed(KeyCode::Space)  {
-        event_writer.send(SimpleEvent {
+        }),
+        KeyCode::Space => Some(SimpleEvent {
             message: "Power Off".to_string(),
             event_type: EventTypes::Power,
-        });
+        }),
+        _ => None,
+    };
+
+    if let Some(event) = event {
+        event_writer.send(event);
     }
-    
 }
 
+}
 
+    
 // System to handle SimpleEvents and change state accordingly
 fn handle_event_system(
     mut next_state: ResMut<NextState<MachineState>>,
@@ -69,7 +71,7 @@ fn handle_event_system(
     for event in event_reader.read() {
         /*
         this match statement is where you would impement either single events triggering 
-        statechanges may be able to add in parameters that take sensor data to chack for emergency conditions
+        statechanges may be able to add in parameters that take sensor data to check for emergency conditions
         */
         match (state.get(), &event.event_type)  {
 
@@ -79,7 +81,7 @@ fn handle_event_system(
                 next_state.set(MachineState::EmergencyShutdown);
                 on_enter_emergency(&mut next_state);
             }
-            //FIXME: this condition must be redefined 
+            //TODO: this condition must be redefined before a robot is  
             (MachineState::EmergencyShutdown, EventTypes::Start) => {
                 next_state.set(MachineState::EmergencyShutdown);
 
@@ -109,7 +111,7 @@ fn handle_event_system(
                 println!("Invalid transition from {:?} with event {:?}", state.get(), event.event_type);
             }
         }
-
+// just debug lines, not neccesary
         info!("{}:{:?}",event.message, event.event_type);
         info!("state{:?}",state);
     }
@@ -130,11 +132,10 @@ impl Plugin for SimpleEventPlugin {
 fn on_enter_emergency(next_state:&mut ResMut<NextState<MachineState>>,
 ) {
     println!("Entering Emergency State!");
-    // Add your emergency behavior here
+    //TODO: Add your emergency behavior here
     //send normal conditions reached when safe to switch to emergency idle
 
     //this makes it appear like it never reaches emshupdown but it is just redefined before the end of the frame
     next_state.set(MachineState::EmergencyIdle);
 
 }
-
