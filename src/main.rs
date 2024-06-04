@@ -19,4 +19,5 @@ fn main() {
 }
 fn state_in_now(state: Res<State<MachineState>>){
     println!("state: {:?}", state)
+    //dbg!(state);
 }

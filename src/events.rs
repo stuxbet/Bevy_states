@@ -15,8 +15,10 @@ enum EventTypes {
     Start,
     Stop,
     Emergency,
-    PauseButtonHit
+    PauseButtonHit,
+    Power
 }
+
 
 //System to send SimpleEvent when a key is pressed
 fn send_event_system(
@@ -48,6 +50,13 @@ fn send_event_system(
             event_type: EventTypes::PauseButtonHit,
         });
     }
+    if keyboard_input.just_pressed(KeyCode::Space)  {
+        event_writer.send(SimpleEvent {
+            message: "Power Off".to_string(),
+            event_type: EventTypes::Power,
+        });
+    }
+    
 }
 
 
@@ -55,7 +64,7 @@ fn send_event_system(
 fn handle_event_system(
     mut next_state: ResMut<NextState<MachineState>>,
     mut event_reader: EventReader<SimpleEvent>,
-    mut state: Res<State<MachineState>>
+    state: Res<State<MachineState>>
 ) {
     for event in event_reader.read() {
         /*
@@ -64,13 +73,9 @@ fn handle_event_system(
         */
         match (state.get(), &event.event_type)  {
 
-            // (MachineState::Idle, EventTypes::Emergency) | (MachineState::Running, EventTypes::Emergency) |(MachineState::Paused, EventTypes::Emergency) => {
-            //     next_state.set(MachineState::EmergencyShutdown);
-            //     on_enter_emergency();
-            // }
-
 
             (_, EventTypes::Emergency) => {
+                //this may be a place to put something that stops a spam of Eshut events from disrupting Eshut procedure
                 next_state.set(MachineState::EmergencyShutdown);
                 on_enter_emergency(&mut next_state);
             }
@@ -95,8 +100,12 @@ fn handle_event_system(
                 next_state.set(MachineState::Idle);
 
             }
+            (MachineState::Running, EventTypes::Power)|(MachineState::Idle, EventTypes::Power)|(MachineState::Paused, EventTypes::Power) => {
+                next_state.set(MachineState::Turnoff);
+
+            }
             _ => {
-                // Invalid transition, do nothing or log an error
+                // undefined/invalid transition behavior
                 println!("Invalid transition from {:?} with event {:?}", state.get(), event.event_type);
             }
         }
@@ -115,6 +124,8 @@ impl Plugin for SimpleEventPlugin {
             .add_systems(Update,handle_event_system);
     }
 }
+
+
 //Here is a sample function to define on enter behavior
 fn on_enter_emergency(next_state:&mut ResMut<NextState<MachineState>>,
 ) {
