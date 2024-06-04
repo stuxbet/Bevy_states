@@ -1,6 +1,10 @@
 use bevy::prelude::*;
 use bevy::input::keyboard::KeyCode;
 
+use crate::states::MachineState;
+//use crate::states::StatePlugin;
+
+//mod states;
 
 // Define a simple event
 #[derive(Event)]
@@ -8,7 +12,7 @@ struct SimpleEvent {
     pub message: String,
     pub event_type: EventTypes
 }
-#[derive(Event,Debug)]
+#[derive(Debug)]
 enum EventTypes {
     ShitHitsTheFan,
     BigFire,
@@ -49,14 +53,29 @@ fn send_event_system(
 }
 
 
-// System to handle SimpleEvent
-fn handle_event_system(mut event_reader: EventReader<SimpleEvent>) {
+// System to handle SimpleEvent to change state
+fn handle_event_system(
+    mut event_reader: EventReader<SimpleEvent>,
+    mut state: Res<State<MachineState>>
+) {
     for event in event_reader.read() {
+
+        // match state.current() {
+        //     event_type:: BigFire => {
+        //         println!("Changing from StateA to StateB");
+        //         state.set(MachineState::Idle);
+        //     }
+        //     event_type:: Explosion => {
+        //         println!("Changing from StateB to StateA");
+        //         state.set(MachineState::Running);
+        //     }
+        // }
+
         info!("{}:{:?}",event.message, event.event_type);
+        info!("state{:?}",state);
     }
 }
 
-// Define the plugin
 pub struct SimpleEventPlugin;
 
 impl Plugin for SimpleEventPlugin {
