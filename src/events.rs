@@ -13,7 +13,7 @@ struct SimpleEvent {
 #[derive(Debug)]
 enum EventTypes {
     Start,
-    BigFire,
+    Stop,
     Emergency,
     PauseButtonHit
 }
@@ -26,8 +26,8 @@ fn send_event_system(
 ) {
     if keyboard_input.just_pressed(KeyCode::KeyA)  {
         event_writer.send(SimpleEvent {
-            message: "Overtemp Detected event sent".to_string(),
-            event_type: EventTypes::BigFire,
+            message: "Stop event sent".to_string(),
+            event_type: EventTypes::Stop,
         });
     }
     if keyboard_input.just_pressed(KeyCode::KeyS)  {
@@ -44,7 +44,7 @@ fn send_event_system(
     }
     if keyboard_input.just_pressed(KeyCode::KeyP)  {
         event_writer.send(SimpleEvent {
-            message: "Irratic sensor data detected event sent".to_string(),
+            message: "Pause pressed".to_string(),
             event_type: EventTypes::PauseButtonHit,
         });
     }
@@ -62,25 +62,42 @@ fn handle_event_system(
         this match statement is where you would impement either single events triggering 
         statechanges may be able to add in parameters that take sensor data to chack for emergency conditions
         */
+        match (state.get(), &event.event_type)  {
+
+            // (MachineState::Idle, EventTypes::Emergency) | (MachineState::Running, EventTypes::Emergency) |(MachineState::Paused, EventTypes::Emergency) => {
+            //     next_state.set(MachineState::EmergencyShutdown);
+            //     on_enter_emergency();
+            // }
 
 
-        match event.event_type  {
-            EventTypes::BigFire => {
-                next_state.set(MachineState::Running);
-            }
-            EventTypes::Emergency => {            
+            (_, EventTypes::Emergency) => {
                 next_state.set(MachineState::EmergencyShutdown);
-                on_enter_emergency();
+                on_enter_emergency(&mut next_state);
             }
-            EventTypes::Start => {
+            //FIXME: this condition must be redefined 
+            (MachineState::EmergencyShutdown, EventTypes::Start) => {
+                next_state.set(MachineState::EmergencyShutdown);
+
+            }
+            (MachineState::Idle, EventTypes::Start) => {
                 next_state.set(MachineState::Running);
+
             }
-            EventTypes::PauseButtonHit => {
-                match state.get() {
-                    MachineState::Paused => next_state.set(MachineState::Running),
-                    MachineState::Running => next_state.set(MachineState::Paused),
-                    _ => (),
-                }
+            (MachineState::Running, EventTypes::PauseButtonHit) => {
+                next_state.set(MachineState::Paused);
+
+            }
+            (MachineState::Paused, EventTypes::PauseButtonHit) => {
+                next_state.set(MachineState::Running);
+
+            }
+            (MachineState::Running, EventTypes::Stop) => {
+                next_state.set(MachineState::Idle);
+
+            }
+            _ => {
+                // Invalid transition, do nothing or log an error
+                println!("Invalid transition from {:?} with event {:?}", state.get(), event.event_type);
             }
         }
 
@@ -99,8 +116,14 @@ impl Plugin for SimpleEventPlugin {
     }
 }
 //Here is a sample function to define on enter behavior
-fn on_enter_emergency() {
+fn on_enter_emergency(next_state:&mut ResMut<NextState<MachineState>>,
+) {
     println!("Entering Emergency State!");
     // Add your emergency behavior here
+    //send normal conditions reached when safe to switch to emergency idle
+
+    //this makes it appear like it never reaches emshupdown but it is just redefined before the end of the frame
+    next_state.set(MachineState::EmergencyIdle);
+
 }
 
