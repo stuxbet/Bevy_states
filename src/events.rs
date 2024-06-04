@@ -2,9 +2,6 @@ use bevy::prelude::*;
 use bevy::input::keyboard::KeyCode;
 
 use crate::states::MachineState;
-//use crate::states::StatePlugin;
-
-//mod states;
 
 // Define a simple event
 #[derive(Event)]
@@ -20,56 +17,61 @@ enum EventTypes {
     MiscComputerIssue
 }
 
-//System to send SimpleEvent periodically
+//System to send SimpleEvent when a key is pressed
 fn send_event_system(
     mut event_writer: EventWriter<SimpleEvent>,
     keyboard_input: Res<ButtonInput<KeyCode>>,
 
 ) {
-    if keyboard_input.pressed(KeyCode::KeyA)  {
+    if keyboard_input.just_pressed(KeyCode::KeyA)  {
         event_writer.send(SimpleEvent {
-            message: "A pressed".to_string(),
+            message: "Overtemp Detected event sent".to_string(),
             event_type: EventTypes::BigFire,
         });
     }
-    if keyboard_input.pressed(KeyCode::KeyS)  {
+    if keyboard_input.just_pressed(KeyCode::KeyS)  {
         event_writer.send(SimpleEvent {
-            message: "S pressed".to_string(),
+            message: "total meltdown Detected event sent".to_string(),
             event_type: EventTypes::ShitHitsTheFan,
         });
     }
-    if keyboard_input.pressed(KeyCode::KeyD)  {
+    if keyboard_input.just_pressed(KeyCode::KeyD)  {
         event_writer.send(SimpleEvent {
-            message: "D pressed".to_string(),
+            message: "large vibration and temp detected event sent".to_string(),
             event_type: EventTypes::Explosion,
         });
     }
-    if keyboard_input.pressed(KeyCode::KeyW)  {
+    if keyboard_input.just_pressed(KeyCode::KeyW)  {
         event_writer.send(SimpleEvent {
-            message: "W pressed".to_string(),
+            message: "Irratic sensor data detected event sent".to_string(),
             event_type: EventTypes::MiscComputerIssue,
         });
     }
 }
 
 
-// System to handle SimpleEvent to change state
+// System to handle SimpleEvents and change state accordingly
 fn handle_event_system(
+    mut next_state: ResMut<NextState<MachineState>>,
     mut event_reader: EventReader<SimpleEvent>,
     mut state: Res<State<MachineState>>
 ) {
     for event in event_reader.read() {
 
-        // match state.current() {
-        //     event_type:: BigFire => {
-        //         println!("Changing from StateA to StateB");
-        //         state.set(MachineState::Idle);
-        //     }
-        //     event_type:: Explosion => {
-        //         println!("Changing from StateB to StateA");
-        //         state.set(MachineState::Running);
-        //     }
-        // }
+        match event.event_type  {
+            EventTypes::BigFire => {
+                next_state.set(MachineState::Running);
+            }
+            EventTypes::Explosion => {
+                next_state.set(MachineState::Idle);
+            }
+            EventTypes::ShitHitsTheFan => {
+                next_state.set(MachineState::Running);
+            }
+            EventTypes::MiscComputerIssue => {
+                next_state.set(MachineState::Idle);
+            }
+        }
 
         info!("{}:{:?}",event.message, event.event_type);
         info!("state{:?}",state);

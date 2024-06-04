@@ -1,5 +1,4 @@
 use bevy::prelude::*;
-// use bevy_window::WindowPlugin;
 use bevy::input::keyboard::KeyCode;
 
 #[derive(Debug,Clone,Copy,Default,States,Hash, Eq, PartialEq, Resource )]
@@ -15,20 +14,8 @@ pub enum MachineState {
 
 pub struct StatePlugin;
 
-/* 
-impl Plugin for StatePlugin {
-    fn build(&self, app: &mut App) {
-        app.add_state::<MachineState>().add_systems(
-            Update,
-            (
-                game_state_input_events,
-                //transition_to_in_game.run_if(in_state(GameState::GameOver)),
-            ),
-        );
-    }
-}
-*/
 
+//plugin system setup to add to app
 impl Plugin for StatePlugin {
     fn build(&self,app: &mut App) {
         app.init_state::<MachineState>()
@@ -36,7 +23,7 @@ impl Plugin for StatePlugin {
     }
 }
 
-
+//just a test funciton to flip flop state when space is pressed
 fn game_state_input_events(
     mut next_state: ResMut<NextState<MachineState>>,
     state: Res<State<MachineState>>,

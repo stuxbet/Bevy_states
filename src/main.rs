@@ -3,7 +3,6 @@
 use bevy::prelude::*;
 mod states;
 mod events;
-mod event_handler;
 
 use states::StatePlugin;
 use states::MachineState;
