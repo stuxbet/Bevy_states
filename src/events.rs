@@ -4,7 +4,7 @@ use bevy::input::keyboard::KeyCode;
 //FIXME:  this makes this system not fully indepenant from the states.rs so I think this should be looked at
 use crate::states::MachineState;
 
-// Define a simple event
+// SimpleEvent is just the event struct im using
 #[derive(Event)]
 struct SimpleEvent {
     pub message: String,
@@ -12,7 +12,7 @@ struct SimpleEvent {
 }
 #[derive(Debug)]
 enum EventTypes {
-    ShitHitsTheFan,
+    Start,
     BigFire,
     Emergency,
     PauseButtonHit
@@ -32,8 +32,8 @@ fn send_event_system(
     }
     if keyboard_input.just_pressed(KeyCode::KeyS)  {
         event_writer.send(SimpleEvent {
-            message: "total meltdown Detected event sent".to_string(),
-            event_type: EventTypes::ShitHitsTheFan,
+            message: "Startup detected".to_string(),
+            event_type: EventTypes::Start,
         });
     }
     if keyboard_input.just_pressed(KeyCode::KeyE)  {
@@ -70,8 +70,9 @@ fn handle_event_system(
             }
             EventTypes::Emergency => {            
                 next_state.set(MachineState::EmergencyShutdown);
+                on_enter_emergency();
             }
-            EventTypes::ShitHitsTheFan => {
+            EventTypes::Start => {
                 next_state.set(MachineState::Running);
             }
             EventTypes::PauseButtonHit => {
@@ -97,5 +98,9 @@ impl Plugin for SimpleEventPlugin {
             .add_systems(Update,handle_event_system);
     }
 }
-
+//Here is a sample function to define on enter behavior
+fn on_enter_emergency() {
+    println!("Entering Emergency State!");
+    // Add your emergency behavior here
+}
 
