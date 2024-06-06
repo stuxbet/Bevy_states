@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use bevy::input::keyboard::KeyCode;
+//use bevy::input::keyboard::KeyCode;
 
 //FIXME:  this makes this system not fully indepenant from the states.rs so I think this should be looked at
 use crate::states::MachineState;
@@ -21,6 +21,16 @@ enum EventTypes {
 
 
 //System to send SimpleEvent when a key is pressed
+pub fn send_one_event(
+    mut event_writer: EventWriter<SimpleEvent>,
+) {
+    event_writer.send(SimpleEvent {
+        message: "Pause pressed".to_string(),
+        event_type: EventTypes::PauseButtonHit,
+    });
+}
+
+
 fn send_event_system(
     mut event_writer: EventWriter<SimpleEvent>,
     keyboard_input: Res<ButtonInput<KeyCode>>,
@@ -122,7 +132,7 @@ pub struct SimpleEventPlugin;
 impl Plugin for SimpleEventPlugin {
     fn build(&self, app: &mut App) {
         app.add_event::<SimpleEvent>()
-            .add_systems(Update,send_event_system)
+            //.add_systems(Update,send_event_system)
             .add_systems(Update,handle_event_system);
     }
 }

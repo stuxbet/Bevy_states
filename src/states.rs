@@ -1,5 +1,4 @@
 use bevy::prelude::*;
-//use bevy::input::keyboard::KeyCode;
 
 #[derive(Debug,Clone,Copy,Default,States,Hash, Eq, PartialEq, Resource )]
 pub enum MachineState {
