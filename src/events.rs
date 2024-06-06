@@ -33,7 +33,7 @@ pub fn send_one_event(
 
 fn send_event_system(
     mut event_writer: EventWriter<SimpleEvent>,
-    keyboard_input: Res<ButtonInput<KeyCode>>,
+    //keyboard_input: Res<ButtonInput<KeyCode>>,
 
 ) {
     print!("Entered send event system")
