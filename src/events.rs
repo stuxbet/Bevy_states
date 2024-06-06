@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-//use bevy::input::keyboard::KeyCode;
+use bevy::input::keyboard::KeyCode;
 
 //FIXME:  this makes this system not fully indepenant from the states.rs so I think this should be looked at
 use crate::states::MachineState;
@@ -33,13 +33,12 @@ pub fn send_one_event(
 
 fn send_event_system(
     mut event_writer: EventWriter<SimpleEvent>,
-    //keyboard_input: Res<ButtonInput<KeyCode>>,
+    keyboard_input: Res<ButtonInput<KeyCode>>,
 
 ) {
-    print!("Entered send event system")
 
 //TODO: in implementation these keyboard imputs will instead be if statements watching for stimuli either from websocket/webserver (startbutton etc) or sensor data (fire detected etc)
-/* 
+
 for key_code in keyboard_input.get_just_pressed() {
     let event = match key_code {
         KeyCode::KeyA => Some(SimpleEvent {
@@ -68,8 +67,9 @@ for key_code in keyboard_input.get_just_pressed() {
     if let Some(event) = event {
         event_writer.send(event);
     }
-}
-    */
+};
+    
+
 
 }
 
