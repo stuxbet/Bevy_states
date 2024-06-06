@@ -36,9 +36,10 @@ fn send_event_system(
     keyboard_input: Res<ButtonInput<KeyCode>>,
 
 ) {
+    print!("Entered send event system")
 
 //TODO: in implementation these keyboard imputs will instead be if statements watching for stimuli either from websocket/webserver (startbutton etc) or sensor data (fire detected etc)
-
+/* 
 for key_code in keyboard_input.get_just_pressed() {
     let event = match key_code {
         KeyCode::KeyA => Some(SimpleEvent {
@@ -68,6 +69,7 @@ for key_code in keyboard_input.get_just_pressed() {
         event_writer.send(event);
     }
 }
+    */
 
 }
 
@@ -132,7 +134,7 @@ pub struct SimpleEventPlugin;
 impl Plugin for SimpleEventPlugin {
     fn build(&self, app: &mut App) {
         app.add_event::<SimpleEvent>()
-            //.add_systems(Update,send_event_system)
+            .add_systems(Update,send_event_system)
             .add_systems(Update,handle_event_system);
     }
 }
