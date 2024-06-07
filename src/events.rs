@@ -141,7 +141,7 @@ impl Plugin for SimpleEventPlugin {
 
 
 //Here is a sample function to define on enter behavior
-fn on_enter_emergency(next_state:&mut ResMut<NextState<MachineState>>,
+pub fn on_enter_emergency(next_state:&mut ResMut<NextState<MachineState>>,
 ) {
     println!("Entering Emergency State!");
     //TODO: Add your emergency behavior here
