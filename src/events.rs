@@ -75,7 +75,7 @@ for key_code in keyboard_input.get_just_pressed() {
 
     
 // System to handle SimpleEvents and change state accordingly
-fn handle_event_system(
+pub fn handle_event_system(
     mut next_state: ResMut<NextState<MachineState>>,
     mut event_reader: EventReader<SimpleEvent>,
     state: Res<State<MachineState>>
