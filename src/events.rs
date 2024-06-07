@@ -19,16 +19,30 @@ pub enum EventTypes {
     Power
 }
 
+//this is a wrapper function so that the event writer can be used in the send one event api call without the outside program needing access to the event writer
+struct MyEventWriterResource<'a> {
+    writer: Option<EventWriter<'a, SimpleEvent>>,
+}
 
-//System to send SimpleEvent when a key is pressed
-pub fn send_one_event(
+impl Default for MyEventWriterResource<'_> {
+    fn default() -> Self {
+        Self { writer: None }
+    }
+}
+
+
+fn send_one_event_system(
     mut event_writer: EventWriter<SimpleEvent>,
+    state_type: EventTypes
+
 ) {
-    event_writer.send(SimpleEvent {
-        message: "Pause pressed".to_string(),
-        event_type: EventTypes::PauseButtonHit,
+    event_writer.send(SimpleEvent{
+        message: "Single event went through".to_string(),
+        event_type: state_type
+
     });
 }
+
 
 
 pub fn send_event_system(
@@ -135,7 +149,10 @@ impl Plugin for SimpleEventPlugin {
     fn build(&self, app: &mut App) {
         app.add_event::<SimpleEvent>()
             .add_systems(Update,send_event_system)
+            //.add_systems(send_event_system)
+            //.add_systems(Update,send_one_event_system)
             .add_systems(Update,handle_event_system);
+
     }
 }
 
