@@ -6,12 +6,12 @@ use crate::states::MachineState;
 
 // SimpleEvent is just the event struct im using
 #[derive(Event)]
-struct SimpleEvent {
+pub struct SimpleEvent {
     pub message: String,
     pub event_type: EventTypes
 }
 #[derive(Debug)]
-enum EventTypes {
+pub enum EventTypes {
     Start,
     Stop,
     Emergency,
@@ -31,7 +31,7 @@ pub fn send_one_event(
 }
 
 
-fn send_event_system(
+pub fn send_event_system(
     mut event_writer: EventWriter<SimpleEvent>,
     keyboard_input: Res<ButtonInput<KeyCode>>,
 
