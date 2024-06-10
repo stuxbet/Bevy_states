@@ -2,11 +2,14 @@ use bevy::prelude::*;
 mod states;
 mod events;
 
+
+
 use states::StatePlugin;
 use states::MachineState;
 use events::SimpleEventPlugin;
 fn main() {
     App::new()
+
     .add_plugins(DefaultPlugins)
         // // Add state handling
     .add_plugins(StatePlugin)
@@ -23,3 +26,6 @@ fn state_in_now(state: Res<State<MachineState>>){
     //events::send_one_event_system();
     //dbg!(state);
 }
+
+
+

@@ -44,17 +44,14 @@ impl Default for MyEventWriterResource<'_> {
 // }
 
 
-//FIXME: experimental code
-
-fn send_one_event_system(world: &mut World, new_state: EventTypes) {
-    let mut event_writer = world.get_resource_mut::<Events<SimpleEvent>>().unwrap();
-    event_writer.send(SimpleEvent{
+pub fn send_simple_event(event_writer: &mut EventWriter<SimpleEvent>, new_state: EventTypes) {
+    event_writer.send(SimpleEvent {
         message: "Single event went through".to_string(),
-        event_type: new_state
-
+        event_type: new_state,
     });
 }
-//experimental
+
+
 
 
 
@@ -119,6 +116,7 @@ pub fn handle_event_system(
             (_, EventTypes::Emergency) => {
                 //this may be a place to put something that stops a spam of Eshut events from disrupting Eshut procedure
                 next_state.set(MachineState::EmergencyShutdown);
+                println!("got here");
                 on_enter_emergency(&mut next_state);
             }
             //TODO: this condition must be redefined before a robot is  
