@@ -15,7 +15,6 @@ fn main() {
     .add_plugins(StatePlugin)
     //this is just a debug print statement to see the current state
     .add_systems(Update, state_in_now)
-    // .add_systems(Update, events::send_one_event_system)
     //event stuff
     .add_plugins(SimpleEventPlugin)
 
@@ -23,8 +22,6 @@ fn main() {
 }
 fn state_in_now(state: Res<State<MachineState>>){
     println!("state: {:?}", state);
-    //events::send_one_event_system();
-    //dbg!(state);
 }
 
 

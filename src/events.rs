@@ -20,6 +20,7 @@ pub enum EventTypes {
 }
 
 //this is a wrapper function so that the event writer can be used in the send one event api call without the outside program needing access to the event writer
+//not sure if this is actually used prob gonna get cut
 struct MyEventWriterResource<'a> {
     writer: Option<EventWriter<'a, SimpleEvent>>,
 }
@@ -29,33 +30,16 @@ impl Default for MyEventWriterResource<'_> {
         Self { writer: None }
     }
 }
+//
 
-
-// pub fn send_one_event_system(
-//     mut event_writer: EventWriter<SimpleEvent>,
-//     state_type: EventTypes
-
-// ) {
-//     event_writer.send(SimpleEvent{
-//         message: "Single event went through".to_string(),
-//         event_type: state_type
-
-//     });
-// }
-
-
+#[allow(unused)]
 pub fn send_simple_event(event_writer: &mut EventWriter<SimpleEvent>, new_state: EventTypes) {
     event_writer.send(SimpleEvent {
         message: "Single event went through".to_string(),
         event_type: new_state,
     });
 }
-
-
-
-
-
-
+//this has become depricated and is only used for development and testing
 pub fn send_event_system(
     mut event_writer: EventWriter<SimpleEvent>,
     keyboard_input: Res<ButtonInput<KeyCode>>,
@@ -172,7 +156,7 @@ impl Plugin for SimpleEventPlugin {
 //Here is a sample function to define on enter behavior
 pub fn on_enter_emergency(next_state:&mut ResMut<NextState<MachineState>>,
 ) {
-    println!("Entering Emergency State!");
+    println!("Entering Emergency State!: this message is called from bevy_states");
     //TODO: Add your emergency behavior here
     //send normal conditions reached when safe to switch to emergency idle
 
