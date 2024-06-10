@@ -31,17 +31,31 @@ impl Default for MyEventWriterResource<'_> {
 }
 
 
-fn send_one_event_system(
-    mut event_writer: EventWriter<SimpleEvent>,
-    state_type: EventTypes
+// pub fn send_one_event_system(
+//     mut event_writer: EventWriter<SimpleEvent>,
+//     state_type: EventTypes
 
-) {
+// ) {
+//     event_writer.send(SimpleEvent{
+//         message: "Single event went through".to_string(),
+//         event_type: state_type
+
+//     });
+// }
+
+
+//FIXME: experimental code
+
+fn send_one_event_system(world: &mut World, new_state: EventTypes) {
+    let mut event_writer = world.get_resource_mut::<Events<SimpleEvent>>().unwrap();
     event_writer.send(SimpleEvent{
         message: "Single event went through".to_string(),
-        event_type: state_type
+        event_type: new_state
 
     });
 }
+//experimental
+
 
 
 
