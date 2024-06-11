@@ -39,6 +39,8 @@ pub fn send_simple_event(event_writer: &mut EventWriter<SimpleEvent>, new_state:
         event_type: new_state,
     });
 }
+
+
 //this has become depricated and is only used for development and testing
 pub fn send_event_system(
     mut event_writer: EventWriter<SimpleEvent>,
@@ -153,7 +155,7 @@ impl Plugin for SimpleEventPlugin {
 }
 
 
-//Here is a sample function to define on enter behavior
+//Here is a sample function to define on enter behavior may also be useful to have another function like this in another scope
 pub fn on_enter_emergency(next_state:&mut ResMut<NextState<MachineState>>,
 ) {
     println!("Entering Emergency State!: this message is called from bevy_states");

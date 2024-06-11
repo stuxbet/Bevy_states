@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-#[derive(Debug,Clone,Copy,Default,States,Hash, Eq, PartialEq, Resource )]
+#[derive(Debug,Clone,Copy,Default,States,Hash, Eq, PartialEq, Resource, Component )]
 pub enum MachineState {
     #[default]
     Idle,
