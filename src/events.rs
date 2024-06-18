@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use bevy::input::keyboard::KeyCode;
+// use bevy::input::keyboard::KeyCode;
 
 //FIXME:  this makes this system not fully indepenant from the states.rs so I think this should be looked at
 use crate::states::MachineState;
@@ -41,48 +41,45 @@ pub fn send_simple_event(event_writer: &mut EventWriter<SimpleEvent>, new_state:
 }
 
 
-//this has become depricated and is only used for development and testing
-pub fn send_event_system(
-    mut event_writer: EventWriter<SimpleEvent>,
-    keyboard_input: Res<ButtonInput<KeyCode>>,
+// //this has become depricated and is only used for development and testing
+// pub fn send_event_system(
+//     mut event_writer: EventWriter<SimpleEvent>,
+//     keyboard_input: Res<ButtonInput<KeyCode>>,
 
-) {
+// ) {
 
-//TODO: in implementation these keyboard imputs will instead be if statements watching for stimuli either from websocket/webserver (startbutton etc) or sensor data (fire detected etc)
+// //TODO: in implementation these keyboard imputs will instead be if statements watching for stimuli either from websocket/webserver (startbutton etc) or sensor data (fire detected etc)
 
-for key_code in keyboard_input.get_just_pressed() {
-    let event = match key_code {
-        KeyCode::KeyA => Some(SimpleEvent {
-            message: "Stop event sent".to_string(),
-            event_type: EventTypes::Stop,
-        }),
-        KeyCode::KeyS => Some(SimpleEvent {
-            message: "Startup detected".to_string(),
-            event_type: EventTypes::Start,
-        }),
-        KeyCode::KeyE => Some(SimpleEvent {
-            message: "Emergency condition found sounding the alarm".to_string(),
-            event_type: EventTypes::Emergency,
-        }),
-        KeyCode::KeyP => Some(SimpleEvent {
-            message: "Pause pressed".to_string(),
-            event_type: EventTypes::PauseButtonHit,
-        }),
-        KeyCode::Space => Some(SimpleEvent {
-            message: "Power Off".to_string(),
-            event_type: EventTypes::Power,
-        }),
-        _ => None,
-    };
+// // for key_code in keyboard_input.get_just_pressed() {
+// //     let event = match key_code {
+// //         KeyCode::KeyA => Some(SimpleEvent {
+// //             message: "Stop event sent".to_string(),
+// //             event_type: EventTypes::Stop,
+// //         }),
+// //         KeyCode::KeyS => Some(SimpleEvent {
+// //             message: "Startup detected".to_string(),
+// //             event_type: EventTypes::Start,
+// //         }),
+// //         KeyCode::KeyE => Some(SimpleEvent {
+// //             message: "Emergency condition found sounding the alarm".to_string(),
+// //             event_type: EventTypes::Emergency,
+// //         }),
+// //         KeyCode::KeyP => Some(SimpleEvent {
+// //             message: "Pause pressed".to_string(),
+// //             event_type: EventTypes::PauseButtonHit,
+// //         }),
+// //         KeyCode::Space => Some(SimpleEvent {
+// //             message: "Power Off".to_string(),
+// //             event_type: EventTypes::Power,
+// //         }),
+// //         _ => None,
+// //     };
 
-    if let Some(event) = event {
-        event_writer.send(event);
-    }
-};
-    
-
-
-}
+// //     if let Some(event) = event {
+// //         event_writer.send(event);
+// //     }
+// // };
+//}
 
     
 // System to handle SimpleEvents and change state accordingly
@@ -146,7 +143,7 @@ pub struct SimpleEventPlugin;
 impl Plugin for SimpleEventPlugin {
     fn build(&self, app: &mut App) {
         app.add_event::<SimpleEvent>()
-            .add_systems(Update,send_event_system)
+            //.add_systems(Update,send_event_system)
             //.add_systems(send_event_system)
             //.add_systems(Update,send_one_event_system)
             .add_systems(Update,handle_event_system);
