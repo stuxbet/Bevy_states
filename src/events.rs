@@ -99,7 +99,7 @@ pub fn handle_event_system(
             (_, EventTypes::Emergency) => {
                 //this may be a place to put something that stops a spam of Eshut events from disrupting Eshut procedure
                 next_state.set(MachineState::EmergencyShutdown);
-                println!("got here");
+                //println!("got here");
                 on_enter_emergency(&mut next_state);
             }
             //TODO: this condition must be redefined before a robot is  
@@ -134,7 +134,7 @@ pub fn handle_event_system(
         }
 // just debug lines, not neccesary
         info!("{}:{:?}",event.message, event.event_type);
-        info!("state{:?}",state);
+        //info!("state{:?}",state);
     }
 }
 
