@@ -146,11 +146,12 @@ impl Plugin for SimpleEventPlugin {
             //.add_systems(Update,send_event_system)
             //.add_systems(send_event_system)
             //.add_systems(Update,send_one_event_system)
-            .add_systems(Update,handle_event_system);
+            .add_systems(Update,handle_event_system)
+            .add_systems(PostUpdate,checker);
 
     }
 }
-
+fn checker(state: Res<State<MachineState>>){ info!("state{:?}",state);}
 
 //Here is a sample function to define on enter behavior may also be useful to have another function like this in another scope
 pub fn on_enter_emergency(next_state:&mut ResMut<NextState<MachineState>>,
