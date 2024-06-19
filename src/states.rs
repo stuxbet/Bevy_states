@@ -1,6 +1,7 @@
 use bevy::prelude::*;
+use serde::{Serialize, Deserialize};
 
-#[derive(Debug,Clone,Copy,Default,States,Hash, Eq, PartialEq, Resource, Component )]
+#[derive(Debug,Clone,Copy,Default,States,Hash, Eq, PartialEq, Resource, Component, Serialize, Deserialize)]
 pub enum MachineState {
     #[default]
     Idle,
